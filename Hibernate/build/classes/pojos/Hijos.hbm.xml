@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 10-feb-2014 19:25:58 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="pojos.Hijos" table="hijos" catalog="familia">
+        <composite-id name="id" class="pojos.HijosId">
+            <key-property name="idHijos" type="int">
+                <column name="idHijos" />
+            </key-property>
+            <key-property name="padresIdPadres" type="int">
+                <column name="Padres_idPadres" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="padres" class="pojos.Padres" update="false" insert="false" fetch="select">
+            <column name="Padres_idPadres" not-null="true" />
+        </many-to-one>
+        <property name="nombre" type="string">
+            <column name="nombre" length="45" not-null="true" />
+        </property>
+        <property name="edad" type="string">
+            <column name="edad" length="45" />
+        </property>
+        <property name="numero" type="string">
+            <column name="numero" length="45" />
+        </property>
+        <property name="foto" type="binary">
+            <column name="foto" />
+        </property>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 10-feb-2014 19:25:58 by Hibernate Tools 3.2.1.GA -->
+<hibernate-mapping>
+    <class name="pojos.Padres" table="padres" catalog="familia">
+        <id name="idPadres" type="java.lang.Integer">
+            <column name="idPadres" />
+            <generator class="identity" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="45" not-null="true" />
+        </property>
+        <property name="edad" type="java.lang.Integer">
+            <column name="edad" />
+        </property>
+        <property name="telefono" type="string">
+            <column name="telefono" length="45" />
+        </property>
+        <property name="fecha" type="date">
+            <column name="fecha" length="0" />
+        </property>
+        <set name="hijoses" inverse="true">
+            <key>
+                <column name="Padres_idPadres" not-null="true" />
+            </key>
+            <one-to-many class="pojos.Hijos" />
+        </set>
+    </class>
+</hibernate-mapping>

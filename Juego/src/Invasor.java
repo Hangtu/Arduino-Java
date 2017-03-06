@@ -1,0 +1,400 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+import java.awt.*;
+import java.awt.event.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.*;
+import static javax.swing.JOptionPane.*;
+        
+public class Invasor extends javax.swing.JFrame implements ActionListener, MouseListener, MouseMotionListener {
+    
+    public Image getIconImage(){
+         Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("Imagenes/203506_331892093576859_1663112703_q.jpg"));
+         return icon; 
+       }
+
+    public Reproductor a=new Reproductor();
+    private Extraterrestre extraterrestre;
+    private Defensor defensor;
+    private Laser láser;
+    private Bomba bomba; 
+    public Timer temporizador,tic;
+    private int x;
+    
+    public Invasor(Reproductor a) {
+        this.a=a;
+        temporizador = new Timer(50, this);
+        nuevoJuego();
+        initComponents();
+    }
+    
+    
+
+       public void actionPerformed(ActionEvent event) {
+         txt1.setText(Integer.toString(tics / 60));
+         tics = tics - 100;
+         
+         
+        if (event.getSource() == jButton1) {
+            nuevoJuego();
+        }
+        if (event.getSource() == temporizador) {
+            temporizador_Tick();
+        }
+     
+    }
+
+       
+    public void mouseClicked(MouseEvent event) {
+        int xInicial  = defensor.getX();
+        int yInicial  = defensor.getY();
+        if (láser == null) {
+            láser = new Laser(xInicial, yInicial);
+        }
+    }
+
+    public void mouseMoved(MouseEvent event) {
+        defensor.mover(event.getX());
+    }
+
+    public void mouseDragged(MouseEvent e) {
+    }
+
+    public void mouseReleased(MouseEvent event) {
+    }
+
+    public void mousePressed(MouseEvent event) {
+    }
+
+    public void mouseExited(MouseEvent event) {
+    }
+
+    public void mouseEntered(MouseEvent event) {
+    }
+
+
+
+    private void temporizador_Tick() {
+        if (bomba == null) {
+            bomba = new Bomba(extraterrestre.getX(), extraterrestre.getY());
+        }
+        moverTodo();
+        dibujarTodo();
+        comprobarChoques();
+    }
+
+    private void moverTodo() {
+        extraterrestre.mover();
+        if (bomba != null) {
+            bomba.mover();
+        }
+        if (láser != null) {
+            láser.mover();
+        }
+    }
+
+    private void comprobarChoques() {
+        if (colisiona(láser, extraterrestre)) {
+            terminarJuego("Ganado");
+        }
+        else {
+            if (colisiona(bomba, defensor)) {
+                terminarJuego("Perdido");
+            }
+        }
+        if (bomba != null) {
+            if (bomba.getY() > panel.getHeight()) {
+                bomba = null;
+            }
+        }
+        if (láser != null) {
+            if (láser.getY() < 0) {
+                láser = null;
+            }
+        }
+    }
+
+    private boolean colisiona(Sprite uno, Sprite dos) {
+        if (uno == null || dos == null) {
+            return false;
+        }
+        if (    uno.getX() > dos.getX()
+            &&  uno.getY() < (dos.getY() + dos.getAltura())
+            && (uno.getX() + uno.getAnchura()) < (dos.getX() + dos.getAnchura())
+            && (uno.getY() + uno.getAnchura()) > (dos.getY())) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    private void terminarJuego(String ganador) {
+        láser = null;
+        bomba = null;
+        temporizador.stop();
+        nombre=showInputDialog(null,"Nombre Del Jugador",JOptionPane.YES_NO_CANCEL_OPTION);
+   
+        JOptionPane.showMessageDialog(null, "Fin Del Juego "+nombre+ " Haz " + ganador + " Puntaje  "+ tics );
+           Puntajes c=new Puntajes();
+        try {
+           java.io.RandomAccessFile fos = new java.io.RandomAccessFile("Tablas.DAT","rw");
+           fos.seek(fos.length());
+           fos.writeUTF(nombre);
+           fos.writeUTF(txt1.getText());     
+           fos.close();           
+           a.Stop();
+        } catch(java.io.IOException e){
+        
+        }
+         catch (Exception ex) {
+            Logger.getLogger(Invasor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+
+    private void nuevoJuego() {
+        defensor = new Defensor();
+        extraterrestre = new Extraterrestre();
+        temporizador.start();
+    }
+
+    private void dibujarTodo() {
+        Graphics papel = panel.getGraphics();
+        papel.setColor(Color.white);
+        papel.fillRect(0, 0, panel.getWidth(), panel.getHeight());
+
+        defensor.dibujar(panel);
+        extraterrestre.dibujar(panel);
+        if (láser != null) {
+            láser.dibujar(panel);
+        }
+        if (bomba != null) {
+            bomba.dibujar(panel);
+        }
+    }
+
+
+
+    
+    
+//    
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jLayeredPane1 = new javax.swing.JLayeredPane();
+        panel = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        txt1 = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setTitle("Destruye Al Invasor!!");
+        setIconImage(getIconImage());
+        setLocationByPlatform(true);
+        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
+
+        panel.setBackground(new java.awt.Color(255, 255, 255));
+        panel.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
+        panel.setForeground(new java.awt.Color(255, 255, 255));
+        panel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                panelMouseClicked(evt);
+            }
+        });
+        panel.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                panelMouseMoved(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
+        panel.setLayout(panelLayout);
+        panelLayout.setHorizontalGroup(
+            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 358, Short.MAX_VALUE)
+        );
+        panelLayout.setVerticalGroup(
+            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 188, Short.MAX_VALUE)
+        );
+
+        panel.setBounds(20, 30, 360, 190);
+        jLayeredPane1.add(panel, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        jButton1.setBackground(new java.awt.Color(0, 0, 0));
+        jButton1.setFont(new java.awt.Font("Showcard Gothic", 1, 11)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(204, 0, 204));
+        jButton1.setText("Menu");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jButton1.setBounds(20, 250, 80, 30);
+        jLayeredPane1.add(jButton1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        jLabel1.setFont(new java.awt.Font("Showcard Gothic", 0, 12)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 255, 0));
+        jLabel1.setText("Puntaje");
+        jLabel1.setBounds(260, 260, 60, 14);
+        jLayeredPane1.add(jLabel1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        txt1.setEditable(false);
+        txt1.setBounds(330, 250, 59, 30);
+        jLayeredPane1.add(txt1, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        jButton2.setBackground(new java.awt.Color(0, 0, 0));
+        jButton2.setFont(new java.awt.Font("Showcard Gothic", 0, 11)); // NOI18N
+        jButton2.setForeground(new java.awt.Color(204, 0, 204));
+        jButton2.setText("Reiniciar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jButton2.setBounds(110, 250, 100, 30);
+        jLayeredPane1.add(jButton2, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Guerra de Planetas_800.jpg"))); // NOI18N
+        jLabel2.setBounds(0, 0, 420, 310);
+        jLayeredPane1.add(jLabel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLayeredPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 414, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLayeredPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        temporizador.stop();
+        try {
+            a.Stop();
+        } catch (Exception ex) {
+            Logger.getLogger(Invasor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.setVisible(false);
+        new Principal().setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void panelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelMouseClicked
+       int xInicial  = defensor.getX();
+        int yInicial  = defensor.getY();
+        
+        if (láser == null) {
+            láser = new Laser(xInicial, yInicial);
+        }
+    }//GEN-LAST:event_panelMouseClicked
+
+    private void panelMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_panelMouseMoved
+        defensor.mover(evt.getX());
+
+    }//GEN-LAST:event_panelMouseMoved
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+     
+        
+    }//GEN-LAST:event_formWindowOpened
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try {
+            a.Stop();
+            a.Play();
+        } catch (Exception ex) {
+            Logger.getLogger(Invasor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        nuevoJuego();
+    }//GEN-LAST:event_jButton2ActionPerformed
+  
+    
+
+    
+    public void panelmouseDragged(MouseEvent e) {
+    }
+
+    public void panelmouseReleased(MouseEvent event) {
+    }
+
+    public void panelmousePressed(MouseEvent event) {
+    }
+
+    public void panelmouseExited(MouseEvent event) {
+    }
+
+    public void panelmouseEntered(MouseEvent event) {
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Invasor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Invasor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Invasor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Invasor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        
+       // Invasor marco = new Invasor();
+       // marco.setSize(250,280);
+        //marco.crearGUI();
+       // marco.setVisible(true);
+    
+       
+    }
+    String nombre;
+    private int tics=100000;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLayeredPane jLayeredPane1;
+    private javax.swing.JPanel panel;
+    private javax.swing.JTextField txt1;
+    // End of variables declaration//GEN-END:variables
+}
